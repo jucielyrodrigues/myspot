@@ -9,7 +9,7 @@ import { Appbar } from 'react-native-paper';
 export default function App() {
   let [lat, setLat] = useState(0);
   let [lng, setLng] = useState(0);
-  //juciely
+  //jucielyyyyy
   console.log(lng);
   return (
     <View>
