@@ -1,15 +1,13 @@
 import { StatusBar } from 'expo-status-bar';
 import React, { useState } from 'react';
-import MapView from 'react-native-maps';
+import MapView, { Marker } from 'react-native-maps';
 import { StyleSheet, Text, View, ViewBase } from 'react-native';
-import { Button, TextInput } from 'react-native-paper';
-import { Marker } from 'react-native-maps';
-import { Appbar } from 'react-native-paper';
+import { Button, TextInput, Appbar } from 'react-native-paper';
 
 export default function App() {
   let [lat, setLat] = useState(0);
   let [lng, setLng] = useState(0);
-  //jucielyyyyy
+
   console.log(lng);
   return (
     <View>
