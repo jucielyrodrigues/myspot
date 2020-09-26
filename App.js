@@ -7,8 +7,20 @@ import { Button, TextInput, Appbar } from 'react-native-paper';
 export default function App() {
   let [lat, setLat] = useState(0);
   let [lng, setLng] = useState(0);
+  let [dataJson, setDataJson] = useState(0);
 
-  console.log(lng);
+  const fetchLocation = () => {
+    fetch(
+      `https://api.opencagedata.com/geocode/v1/json?key=ad3b7da594ad4a239eb32622118085e1&q=${lat}+${lng}`,
+    )
+      .then((response) => {
+        return response.json();
+      })
+      .then((json) => {
+        setDataJson(json);
+      });
+  };
+
   return (
     <View>
       <Appbar.Header>
@@ -17,7 +29,10 @@ export default function App() {
 
       <MapView style={styles.mapStyle}>
         <Marker
-          coordinate={{ latitude: parseFloat(lat), longitude: parseFloat(lng) }}
+          coordinate={{
+            latitude: dataJson.results[0].geometry.lat,
+            longitude: dataJson.results[0].geometry.lng,
+          }}
         />
       </MapView>
 
@@ -32,11 +47,10 @@ export default function App() {
           placeholder="Longitude"
           onChangeText={setLng}
         />
-        <Button mode="contained" onPress={() => console.log('Pressed')}>
+        <Button mode="contained" onPress={fetchLocation}>
           Search
         </Button>
-        <Text> </Text>
-        <Text style={{ textAlign: 'center' }}>My Location</Text>
+        <Text>{dataJson.results[0].formatted}</Text>
       </View>
     </View>
   );
