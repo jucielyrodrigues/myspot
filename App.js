@@ -8,6 +8,8 @@ export default function App() {
   let [lat, setLat] = useState(0);
   let [lng, setLng] = useState(0);
   let [dataJson, setDataJson] = useState(0);
+  let [latMarker, setlatMarker] = useState(0);
+  let [lngMarker, setlngMarker] = useState(0);
 
   const fetchLocation = () => {
     fetch(
@@ -17,7 +19,9 @@ export default function App() {
         return response.json();
       })
       .then((json) => {
-        setDataJson(json);
+        setlatMarker(json.results[0].geometry.lat);
+        setlngMarker(json.results[0].geometry.lng);
+        setDataJson(json.results[0].formatted);
       });
   };
 
@@ -27,15 +31,24 @@ export default function App() {
         <Appbar.Content style={{ textAlign: 'center' }} title="MySpot" />
       </Appbar.Header>
 
-      <MapView style={styles.mapStyle}>
+      <MapView
+        style={styles.mapStyle}
+        region={{
+          latitude: latMarker,
+          longitude: lngMarker,
+          latitudeDelta: 0.0922,
+          longitudeDelta: 0.0421,
+        }}
+        minZoomLevel={17}
+        style={styles.mapStyle}
+      >
         <Marker
           coordinate={{
-            latitude: dataJson.results[0].geometry.lat,
-            longitude: dataJson.results[0].geometry.lng,
+            latitude: latMarker,
+            longitude: lngMarker,
           }}
         />
       </MapView>
-
       <View style={styles.container}>
         <TextInput
           mode="outlined"
@@ -50,7 +63,7 @@ export default function App() {
         <Button mode="contained" onPress={fetchLocation}>
           Search
         </Button>
-        <Text>{dataJson.results[0].formatted}</Text>
+        <Text>{dataJson}</Text>
       </View>
     </View>
   );
