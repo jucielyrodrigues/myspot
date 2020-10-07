@@ -1,16 +1,15 @@
-import { StatusBar } from 'expo-status-bar';
 import React, { useState } from 'react';
-import MapView, { Marker } from 'react-native-maps';
-import { StyleSheet, Text, View, ViewBase } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
+
 import { Button, TextInput, Appbar } from 'react-native-paper';
+import MapView, { Marker } from 'react-native-maps';
 
 export default function App() {
-  let [lat, setLat] = useState(0);
-  let [lng, setLng] = useState(0);
-  let [dataJson, setDataJson] = useState(0);
-  let [latMarker, setlatMarker] = useState(0);
-  let [lngMarker, setlngMarker] = useState(0);
+  let [lat, setLat] = useState('');
+  let [lng, setLng] = useState('');
+  let [dataJson, setDataJson] = useState('');
 
+  // function to fetch data from opencage
   const fetchLocation = () => {
     fetch(
       `https://api.opencagedata.com/geocode/v1/json?key=ad3b7da594ad4a239eb32622118085e1&q=${lat}+${lng}`,
@@ -19,12 +18,9 @@ export default function App() {
         return response.json();
       })
       .then((json) => {
-        setlatMarker(json.results[0].geometry.lat);
-        setlngMarker(json.results[0].geometry.lng);
-        setDataJson(json.results[0].formatted);
+        setDataJson(json);
       });
   };
-
   return (
     <View>
       <Appbar.Header>
@@ -34,18 +30,17 @@ export default function App() {
       <MapView
         style={styles.mapStyle}
         region={{
-          latitude: latMarker,
-          longitude: lngMarker,
+          latitude: Number(dataJson && dataJson.results[0].geometry.lat),
+          longitude: Number(dataJson && dataJson.results[0].geometry.lng),
           latitudeDelta: 0.0922,
           longitudeDelta: 0.0421,
         }}
         minZoomLevel={17}
-        style={styles.mapStyle}
       >
         <Marker
           coordinate={{
-            latitude: latMarker,
-            longitude: lngMarker,
+            latitude: Number(dataJson && dataJson.results[0].geometry.lat),
+            longitude: Number(dataJson && dataJson.results[0].geometry.lng),
           }}
         />
       </MapView>
@@ -53,17 +48,19 @@ export default function App() {
         <TextInput
           mode="outlined"
           placeholder="Latitude"
-          onChangeText={setLat}
+          value={lat}
+          onChangeText={(lat) => setLat(lat)}
         />
         <TextInput
           mode="outlined"
           placeholder="Longitude"
-          onChangeText={setLng}
+          value={lng}
+          onChangeText={(lng) => setLng(lng)}
         />
         <Button mode="contained" onPress={fetchLocation}>
           Search
         </Button>
-        <Text>{dataJson}</Text>
+        <Text>{dataJson && dataJson.results[0].formatted}</Text>
       </View>
     </View>
   );
