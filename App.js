@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-
+{
+  /* libraries*/
+}
 import { Button, TextInput, Appbar } from 'react-native-paper';
-import MapView, { Marker } from 'react-native-maps';
+import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 
 export default function App() {
   let [lat, setLat] = useState('');
@@ -29,9 +31,13 @@ export default function App() {
 
       <MapView
         style={styles.mapStyle}
+        /* lat and long returned from the API, The Number() function converts the object argument to a number */
+        provider={PROVIDER_GOOGLE}
         region={{
           latitude: Number(dataJson && dataJson.results[0].geometry.lat),
           longitude: Number(dataJson && dataJson.results[0].geometry.lng),
+
+          // latitude/longitude delta specify the span of the view map area
           latitudeDelta: 0.0922,
           longitudeDelta: 0.0421,
         }}
@@ -45,18 +51,21 @@ export default function App() {
         />
       </MapView>
       <View style={styles.container}>
+        {/* box input latitude*/}
         <TextInput
           mode="outlined"
           placeholder="Latitude"
           value={lat}
           onChangeText={(lat) => setLat(lat)}
         />
+        {/* box input longitude*/}
         <TextInput
           mode="outlined"
           placeholder="Longitude"
           value={lng}
           onChangeText={(lng) => setLng(lng)}
         />
+        {/* button search that execute the function fetch*/}
         <Button mode="contained" onPress={fetchLocation}>
           Search
         </Button>
@@ -70,6 +79,7 @@ const styles = StyleSheet.create({
   container: {
     padding: 10,
   },
+
   mapStyle: {
     width: '90%',
     height: '47%',
